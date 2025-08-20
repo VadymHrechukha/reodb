@@ -2432,11 +2432,11 @@ BEGIN
                 'impersonated_login', NULLIF(current_setting('audit.app_impersonated_client_login', true), '')
         ),
         'request', jsonb_build_object(
-                'ip', current_setting('audit.app_request_ip', true),
+                'ip', NULLIF(current_setting('audit.app_request_ip', true), ''),
                 'log_id', str2bigint(current_setting('audit.app_log_id', true)),
-                'trace_id', current_setting('audit.trace_id', true),
+                'trace_id', NULLIF(current_setting('audit.trace_id', true), ''),
                 'app', current_setting('audit.app_name'),
-                'run_id', current_setting('audit.app_request_run_id', true)
+                'run_id', NULLIF(current_setting('audit.app_request_run_id', true), '')
         ),
         'old', CASE WHEN a_operation IN ('UPDATE','DELETE') THEN a_old_data ELSE NULL END,
         'new', CASE WHEN a_operation IN ('INSERT','UPDATE') THEN a_new_data ELSE NULL END
