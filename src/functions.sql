@@ -2446,13 +2446,13 @@ BEGIN
 
     payload_text := payload::TEXT;
     IF octet_length(payload_text) > 8000 THEN
-        SELECT gzip_compress(payload_text) INTO compressed;
-        IF length(compressed) > 8000 THEN
-            RAISE NOTICE 'Skipping notification for % because compressed payload is too large: % bytes', a_table_name, length(compressed);
+        SELECT encode(gzip_compress(payload_text), 'base64') INTO compressed;
+        IF octet_length(compressed::text) >= 8000 THEN
+            RAISE NOTICE 'Skipping notification for % because compressed payload is too large: % bytes', a_table_name, octet_length(compressed);
             RETURN;
         END IF;
 
-        PERFORM pg_notify('audit_channel', encode(compressed, 'base64'));
+        PERFORM pg_notify('audit_channel', compressed::text);
     ELSE
         PERFORM pg_notify('audit_channel', payload_text);
     END IF;
