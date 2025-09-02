@@ -2446,7 +2446,7 @@ BEGIN
     payload_text := payload::TEXT;
 
     -- If payload is small enough, send directly
-    IF octet_length(payload_text) <= 8000 THEN
+    IF octet_length(payload_text) < 8000 THEN
         PERFORM pg_notify('audit_channel', payload_text);
     ELSE
         -- Store in history_audit and send reference
